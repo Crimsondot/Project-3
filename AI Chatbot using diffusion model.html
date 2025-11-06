@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITV308 ITV Project by Umang & Kshitiz Under Developent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .prose {
+            color: #374151; 
+        }
+        .prose br {
+            content: "";
+            display: block;
+            margin-bottom: 0.5em;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #3a6aca; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434d61; 
+        }
+        .lucide {
+            width: 1em;
+            height: 1em;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans antialiased h-screen overflow-hidden">
+
+    <div id="app-container" class="h-full">
+
+        <div id="mainApp" class="h-full flex bg-gray-100 text-gray-900">
+            <nav class="w-64 bg-white p-4 flex flex-col flex-shrink-0 shadow-lg z-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <div>
+                        <p class="font-semibold text-sm">ITV308 Project</p>
+                        <p class="text-xs text-gray-500">Guest Mode</p>
+                    </div>
+                </div>
+                
+                <button id="newChatButton" class="w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 mb-4">
+                    <i data-lucide="plus" class="lucide w-7 h-7"></i>
+                    New Chat
+                </button>
+                
+                <div class="flex-1 overflow-y-auto pr-1">
+                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Conversations</p>
+                    <div id="chatListContainer">
+                        <p class="text-xs text-gray-400">Chat history is not saved in this mode.</p>
+                    </div>
+                </div>
+            </nav>
+            
+            <main class="flex-1 flex flex-col h-full overflow-hidden">
+                <header class="flex items-center justify-between p-4 border-b border-gray-300 flex-shrink-0 bg-white shadow-sm">
+                    <h1 class="text-xl font-bold">ITV308 ITV Project by Umang & Kshitiz (Under Development)</h1>
+                    <div class="flex items-center gap-6">
+                        <nav class="flex gap-4">
+                            <button id="chatTabButton" class="px-3 py-1 rounded-md text-sm font-medium bg-blue-600 text-white">
+                                <i data-lucide="message-square" class="lucide w-4 h-4 inline-block mr-1"></i>
+                                Chat
+                            </button>
+                            <button id="imageTabButton" class="px-3 py-1 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-200">
+                                <i data-lucide="image" class="lucide w-4 h-4 inline-block mr-1"></i>
+                                Generate Image
+                            </button>
+                        </nav>
+                        <img src="c:\Users\umang\OneDrive\Desktop\Chatbot\Dayalbagh_Educational_Institute_logo.jpg" 
+                             alt="Institute Logo" 
+                             class="w-14 h-14 rounded-full">
+                    </div>
+                </header>
+                
+                <div class="flex-1 overflow-y-auto">
+                    
+                    <div id="chatInterface" class="flex flex-col h-full p-4">
+                        <div id="messagesContainer" class="flex-1 overflow-y-auto pr-2">
+                            <div id="chatWelcomeMessage" class="flex items-center justify-center h-full">
+                                <div class="text-center text-gray-400">
+                                    <i data-lucide="brain" class="lucide w-24 h-24 mx-auto"></i>
+                                    <p>Start a new conversation.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="chatLoadingIndicator" class="hidden flex items-center gap-3 p-4">
+                            <div class="p-2 bg-gray-200 rounded-full">
+                                <i data-lucide="brain" class="lucide w-5 h-5 text-gray-700 animate-spin"></i>
+                            </div>
+                            <p>Assistant is thinking...</p>
+                        </div>
+    
+                        <div class="mt-4">
+                            <div id="pendingImagePreview" class="hidden relative w-32 h-32 mb-2 p-2 bg-gray-200 border border-gray-300 rounded-lg">
+                                <img id="pendingImage" src="" alt="Pending upload" class="w-full h-full object-cover rounded">
+                                <button id="clearPendingImage" class_="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold" title="Remove image">
+                                    &times;
+                                </button>
+                            </div>
+                            
+                            <form id="chatForm" class="flex items-center gap-2 p-3 bg-white border border-gray-300 rounded-lg shadow-lg">
+                                <input id="chatInput" type="text" placeholder="Type your message..." class="w-full p-3 bg-white rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0" autocomplete="off">
+                                <button type="submit" id="chatSendButton" class="bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 rounded-full w-10 h-10 p-0 flex items-center justify-center flex-shrink-0" disabled>
+                                    <i data-lucide="send" class="lucide w-5 h-5"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="imageGenerator" class="hidden p-6 h-full flex flex-col">
+                        <h2 class="text-2xl font-bold mb-4">Image Generation</h2>
+                        <p class="text-gray-600 mb-6">Describe the image you want to create.</p>
+                        
+                        <form id="imageForm" class="flex gap-2 mb-4">
+                            <input id="imagePrompt" type="text" placeholder="e.g., A photo of a corgi wearing a chef's hat" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                            <button type="submit" id="imageGenerateButton" class="bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 flex-shrink-0">
+                                <i data-lucide="star" class="lucide w-5 h-5"></i>
+                                <span>Generate</span>
+                            </button>
+                        </form>
+            
+                        <div id="imagePreviewContainer" class="flex-1 bg-gray-200 border-dashed border-gray-400 border-2 rounded-lg flex items-center justify-center relative overflow-hidden">
+                            <div id="imagePlaceholder" class="text-center text-gray-500">
+                                <i data-lucide="image" class="lucide w-24 h-24 mx-auto"></i>
+                                <p>Your generated image will appear here.</p>
+                            </div>
+                            <div id="imageLoadingIndicator" class="hidden flex flex-col items-center">
+                                <i data-lucide="loader-2" class="lucide w-12 h-12 text-blue-500 animate-spin"></i>
+                                <p class="text-gray-600 mt-4">Creating your image...</p>
+                            </div>
+                            <img id="generatedImage" src="" alt="Generated content" class="hidden object-contain max-w-full max-h-full">
+                            <div id="imageError" class="hidden text-center p-4">
+                                <p class="text-red-600"></p>
+                            </div>
+                            <div id="imageActions" class="hidden absolute top-4 right-4 flex gap-2">
+                                <button id="discussImageButton" class="bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100">
+                                    <i data-lucide="message-square" class="lucide w-5 h-5"></i>
+                                    Discuss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module">
+        
+        const apiKey = "AIzaSyBXv4bDo1QP2TsbGGqQxUtkE9lBcvg8sNM"; 
+        const apiHost = "https://generativelanguage.googleapis.com";
+        const textModel = "gemini-2.5-flash-preview-09-2025";
+        const visionModel = "gemini-2.5-flash-preview-09-2025";
+        const imagenModel = "imagen-3.0-generate-002";
+        
+        let activeTab = 'chat';
+        let pendingImage = null; 
+        let generatedImageData = null; 
+        let chatHistory = []; 
+
+        const newChatButton = document.getElementById('newChatButton');
+        const chatListContainer = document.getElementById('chatListContainer');
+        
+        const chatTabButton = document.getElementById('chatTabButton');
+        const imageTabButton = document.getElementById('imageTabButton');
+        const chatInterface = document.getElementById('chatInterface');
+        const imageGenerator = document.getElementById('imageGenerator');
+        
+        const messagesContainer = document.getElementById('messagesContainer');
+        const chatWelcomeMessage = document.getElementById('chatWelcomeMessage');
+        const chatLoadingIndicator = document.getElementById('chatLoadingIndicator');
+        const pendingImagePreview = document.getElementById('pendingImagePreview');
+        const pendingImageEl = document.getElementById('pendingImage');
+        const clearPendingImage = document.getElementById('clearPendingImage');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendButton = document.getElementById('chatSendButton');
+
+        const imageForm = document.getElementById('imageForm');
+        const imagePrompt = document.getElementById('imagePrompt');
+        const imageGenerateButton = document.getElementById('imageGenerateButton');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const imageLoadingIndicator = document.getElementById('imageLoadingIndicator');
+        const generatedImageEl = document.getElementById('generatedImage');
+        const imageError = document.getElementById('imageError');
+        const imageActions = document.getElementById('imageActions');
+        const discussImageButton = document.getElementById('discussImageButton');
+
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return response;
+                    if (response.status >= 400 && response.status < 500) {
+                        const errorData = await response.json();
+                        throw new Error(`Client Error: ${response.status} ${response.statusText}. ${errorData?.error?.message || ''}`);
+                    }
+                    console.warn(`API call failed with status ${response.status}. Retrying in ${delay}ms...`);
+                } catch (error) {
+                    if (error.name === 'TypeError' || error.message.includes('Failed to fetch')) {
+                        console.warn(`Network error. Retrying in ${delay}ms...`, error);
+                    } else {
+                        throw error;
+                    }
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+            throw new Error(`Failed to fetch after ${maxRetries} retries.`);
+        }
+
+        async function generateText(history, prompt, imageParts = []) {
+            const apiUrl = `${apiHost}/v1beta/models/${textModel}:generateContent?key=${apiKey}`;
+            const contents = [
+                ...history.map(msg => ({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: msg.parts
+                })),
+                { role: 'user', parts: [...imageParts, { text: prompt }] }
+            ];
+            const payload = { contents };
+            try {
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts || [{ text: "Error: No response from model." }];
+            } catch (error) {
+                console.error("Text Generation Error:", error);
+                return [{ text: `Error: ${error.message}` }];
+            }
+        }
+
+        async function generateImage(prompt) {
+            const apiUrl = `${apiHost}/v1beta/models/${imagenModel}:predict?key=${apiKey}`;
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": 1 }
+            };
+            try {
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
+                    return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                } else {
+                    throw new Error(result.error?.message || "Invalid response structure from Imagen API.");
+                }
+            } catch (error) {
+                console.error("Image Generation Error:", error);
+                throw error;
+            }
+        }
+
+        async function generateFromImage(prompt, base64Image, mimeType) {
+            const apiUrl = `${apiHost}/v1beta/models/${visionModel}:generateContent?key=${apiKey}`;
+            const contents = [{
+                role: "user",
+                parts: [
+                    { text: prompt },
+                    { inlineData: { mimeType, data: base64Image } }
+                ]
+            }];
+            const payload = { contents };
+            try {
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts || [{ text: "Error: No response from model." }];
+            } catch (error) {
+                console.error("Image Vision Error:", error);
+                return [{ text: `Error: ${error.message}` }];
+            }
+        }
+        
+        function showTab(tabId) {
+            if (tabId === 'chat') {
+                activeTab = 'chat';
+                chatInterface.classList.remove('hidden');
+                chatInterface.classList.add('flex');
+                imageGenerator.classList.add('hidden');
+                chatTabButton.classList.add('bg-blue-600', 'text-white');
+                chatTabButton.classList.remove('text-gray-600', 'hover:bg-gray-200');
+                imageTabButton.classList.add('text-gray-600', 'hover:bg-gray-200');
+                imageTabButton.classList.remove('bg-blue-600', 'text-white');
+            } else {
+                activeTab = 'image';
+                imageGenerator.classList.remove('hidden');
+                imageGenerator.classList.add('flex');
+                chatInterface.classList.add('hidden');
+                imageTabButton.classList.add('bg-blue-600', 'text-white');
+                imageTabButton.classList.remove('text-gray-600', 'hover:bg-gray-200');
+                chatTabButton.classList.add('text-gray-600', 'hover:bg-gray-200');
+                chatTabButton.classList.remove('bg-blue-600', 'text-white');
+            }
+        }
+
+        function renderMessages(messageList) {
+            messagesContainer.innerHTML = ''; 
+            if (messageList.length === 0) {
+                chatWelcomeMessage.classList.remove('hidden');
+            } else {
+                chatWelcomeMessage.classList.add('hidden');
+                messageList.forEach(msg => {
+                    messagesContainer.appendChild(createMessageElement(msg));
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            lucide.createIcons(); 
+        }
+
+        function createMessageElement(msg) {
+            const div = document.createElement('div');
+            const bgColor = msg.role === 'user' ? 'bg-blue-100' : 'bg-white border border-gray-200';
+            const iconName = msg.role === 'user' ? 'user' : 'brain';
+            const displayName = msg.role === 'model' ? 'Assistant' : 'You';
+            const iconBg = msg.role === 'user' ? 'bg-blue-200' : 'bg-gray-200';
+            const iconColor = msg.role === 'user' ? 'text-blue-700' : 'text-gray-700';
+            
+            const textContent = msg.parts.filter(p => p.text).map(p => p.text).join('\n').replace(/\n/g, '<br />');
+            const imageParts = msg.parts.filter(p => p.inlineData);
+
+            let imagesHTML = '';
+            if (imageParts.length > 0) {
+                imagesHTML = imageParts.map(part => 
+                    `<img src="data:${part.inlineData.mimeType};base64,${part.inlineData.data}" alt="Chat content" class="max-w-xs rounded-lg mt-2">`
+                ).join('');
+            }
+            
+            div.className = `p-4 rounded-lg ${bgColor} mb-4`;
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="p-2 ${iconBg} rounded-full flex-shrink-0">
+                        <i data-lucide="${iconName}" class="lucide w-5 h-5 ${iconColor}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="font-bold capitalize text-gray-900">${displayName}</span>
+                        ${imagesHTML}
+                        ${textContent ? `<div class="prose max-w-none text-gray-800 mt-1">${textContent}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+        
+        function setChatLoading(isLoading) {
+            if (isLoading) {
+                chatLoadingIndicator.classList.remove('hidden');
+                chatInput.disabled = true;
+                chatSendButton.disabled = true;
+            } else {
+                chatLoadingIndicator.classList.add('hidden');
+                chatInput.disabled = false;
+                chatSendButton.disabled = false;
+                updateSendButtonState(); 
+                chatInput.focus();
+            }
+        }
+        
+        function updateSendButtonState() {
+            const hasText = chatInput.value.trim().length > 0;
+            const hasImage = pendingImage !== null;
+            chatSendButton.disabled = !hasText && !hasImage;
+        }
+
+        function handleNewChat() {
+            chatHistory = [];
+            renderMessages(chatHistory);
+            pendingImage = null;
+            pendingImagePreview.classList.add('hidden');
+            chatInput.value = '';
+            showTab('chat');
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const prompt = chatInput.value.trim();
+            
+            if (!prompt && !pendingImage) return;
+
+            const userMessage = {
+                role: "user",
+                parts: []
+            };
+
+            if (pendingImage) {
+                userMessage.parts.push({
+                    inlineData: {
+                        data: pendingImage.base64,
+                        mimeType: pendingImage.mimeType
+                    }
+                });
+            }
+            if (prompt) {
+                userMessage.parts.push({ text: prompt });
+            }
+
+            chatHistory.push(userMessage);
+            renderMessages(chatHistory);
+
+            chatInput.value = '';
+            pendingImagePreview.classList.add('hidden');
+            const imageToProcess = pendingImage; 
+            pendingImage = null;
+            updateSendButtonState();
+            setChatLoading(true);
+
+            try {
+                const historyForApi = chatHistory.slice(0, -1).map(msg => ({ 
+                    role: msg.role, 
+                    parts: msg.parts 
+                }));
+
+                let modelParts = [];
+                if (imageToProcess) {
+                    modelParts = await generateFromImage(prompt, imageToProcess.base64, imageToProcess.mimeType);
+                } else {
+                    modelParts = await generateText(historyForApi, prompt);
+                }
+
+                const modelMessage = {
+                    role: "model",
+                    parts: modelParts
+                };
+                chatHistory.push(modelMessage);
+                renderMessages(chatHistory);
+
+            } catch (err) {
+                console.error("Error sending message:", err);
+                const errorMsg = {
+                    role: "model",
+                    parts: [{ text: `Sorry, something went wrong: ${err.message}` }]
+                };
+                chatHistory.push(errorMsg);
+                renderMessages(chatHistory);
+            } finally {
+                setChatLoading(false);
+            }
+        }
+        
+        async function handleImageSubmit(event) {
+            event.preventDefault();
+            const prompt = imagePrompt.value.trim();
+            if (!prompt) return;
+            
+            imagePlaceholder.classList.add('hidden');
+            imageError.classList.add('hidden');
+            generatedImageEl.classList.add('hidden');
+            imageActions.classList.add('hidden');
+            imageLoadingIndicator.classList.remove('hidden');
+            imageGenerateButton.disabled = true;
+            imageGenerateButton.querySelector('span').textContent = 'Generating...';
+
+            const oldIcon = imageGenerateButton.querySelector('svg');
+            if (oldIcon) {
+                oldIcon.remove();
+            }
+            const newIcon = document.createElement('i');
+            newIcon.setAttribute('data-lucide', 'loader-2');
+            newIcon.className = 'lucide w-5 h-5 animate-spin';
+            imageGenerateButton.prepend(newIcon); 
+            lucide.createIcons();
+            
+            generatedImageData = null;
+
+            try {
+                const imageUrl = await generateImage(prompt);
+                generatedImageEl.src = imageUrl;
+                generatedImageEl.classList.remove('hidden');
+                imageActions.classList.remove('hidden');
+                
+                const [header, data] = imageUrl.split(',');
+                const mimeType = header.match(/:(.*?);/)[1];
+                generatedImageData = { base64: data, mimeType: mimeType };
+                
+            } catch (err) {
+                console.error(err);
+                imageError.querySelector('p').textContent = `Error: ${err.message}`;
+                imageError.classList.remove('hidden');
+            } finally {
+                imageLoadingIndicator.classList.add('hidden');
+                imageGenerateButton.disabled = false;
+                imageGenerateButton.querySelector('span').textContent = 'Generate';
+
+                const loadingIcon = imageGenerateButton.querySelector('svg'); 
+                if (loadingIcon) {
+                    loadingIcon.remove();
+                }
+                const starIcon = document.createElement('i');
+                starIcon.setAttribute('data-lucide', 'star');
+                starIcon.className = 'lucide w-5 h-5';
+                imageGenerateButton.prepend(starIcon);
+                lucide.createIcons();
+            }
+        }
+        
+        function handleDiscussImage() {
+            if (!generatedImageData) return;
+            
+            pendingImage = generatedImageData;
+            pendingImageEl.src = `data:${generatedImageData.mimeType};base64,${generatedImageData.base64}`;
+            pendingImagePreview.classList.remove('hidden');
+            chatInput.value = 'Tell me about this image I generated...';
+            updateSendButtonState();
+            showTab('chat');
+        }
+
+        newChatButton.onclick = handleNewChat;
+        
+        chatTabButton.onclick = () => showTab('chat');
+        imageTabButton.onclick = () => showTab('image');
+        
+        chatForm.onsubmit = handleChatSubmit;
+        imageForm.onsubmit = handleImageSubmit;
+        discussImageButton.onclick = handleDiscussImage;
+        
+        clearPendingImage.onclick = () => {
+            pendingImage = null;
+            pendingImagePreview.classList.add('hidden');
+            if (chatInput.value === 'Tell me about this image I generated...') {
+                chatInput.value = '';
+            }
+            updateSendButtonState();
+        };
+        
+        chatInput.oninput = updateSendButtonState;
+        
+        lucide.createIcons(); 
+        updateSendButtonState();
+
+    </script>
+</body>
+</html>
